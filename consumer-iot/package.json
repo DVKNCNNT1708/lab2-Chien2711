@@ -1,0 +1,18 @@
+{
+  "name": "consumer-iot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@pact-foundation/pact": "^16.4.0",
+    "axios": "^1.16.0",
+    "jest": "^30.4.2"
+  }
+}
