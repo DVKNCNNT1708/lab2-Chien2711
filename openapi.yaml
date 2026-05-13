@@ -1,6 +1,93 @@
-example:
-        type: "https://example.com/probs/bad-request" # Sửa thành URL đầy đủ cho chắc chắn
+openapi: 3.1.0
+info:
+  title: B5 - IoT and Core Contract
+  version: 1.0.0
+  description: Contract negotiation for Lab 02 between IoT and Core service.
+  contact:
+    name: Nhóm B5
+    email: student@example.edu.vn
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+tags:
+  - name: health
+    description: Health check endpoints
+  - name: alerts
+    description: Alert management endpoints
+paths:
+  /health:
+    get:
+      tags: [health]
+      summary: Kiểm tra trạng thái service
+      description: Endpoint kiểm tra service còn hoạt động hay không.
+      operationId: getHealth
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+  /alerts:
+    post:
+      tags: [alerts]
+      summary: Tạo cảnh báo mới
+      description: Gửi dữ liệu cảnh báo từ IoT service sang Core service.
+      operationId: createAlert
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                deviceId: { type: string }
+                temp: { type: integer }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string }
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status: { type: string }
+      example:
+        status: "ok"
+    Problem:
+      type: object
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        instance: { type: string, format: uri }
+      example:
+        type: "https://example.com/probs/out-of-stock"
         title: "Bad Request"
         status: 400
         detail: "Invalid input provided"
-        instance: "https://example.com/errors/123"   # Sửa thành URL đầy đủ luôn
+        instance: "https://example.com/instance/123"
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
